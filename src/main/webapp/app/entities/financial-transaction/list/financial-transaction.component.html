@@ -1,0 +1,106 @@
+<div>
+  <h2 id="page-heading" data-cy="FinancialTransactionHeading">
+    <span>Financial Transaction</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-financial-transaction"
+        [routerLink]="['/financial-transaction/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Dodaj Financial Transaction </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="financialTransactions?.length === 0">
+    <span>No Financial Transactions found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="financialTransactions && financialTransactions.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="amount">
+            <div class="d-flex">
+              <span>Amount</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="description">
+            <div class="d-flex">
+              <span>Description</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="wallet.name">
+            <div class="d-flex">
+              <span>Wallet</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let financialTransaction of financialTransactions; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/financial-transaction', financialTransaction.id, 'view']">{{ financialTransaction.id }}</a>
+          </td>
+          <td>{{ financialTransaction.amount }}</td>
+          <td>{{ financialTransaction.description }}</td>
+          <td>
+            <div *ngIf="financialTransaction.wallet">
+              <a [routerLink]="['/wallet', financialTransaction.wallet.id, 'view']">{{ financialTransaction.wallet.name }}</a>
+            </div>
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/financial-transaction', financialTransaction.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">Widok</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/financial-transaction', financialTransaction.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edytuj</span>
+              </button>
+
+              <button type="submit" (click)="delete(financialTransaction)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Usuń</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
